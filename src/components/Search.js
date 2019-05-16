@@ -31,11 +31,11 @@ export default class Search extends Component {
     }
     keyPress(e){
         if(e.key === 'Enter'){
-            this.setState({ isLoading: true });
+            this.setState({ isLoading: !this.state.isLoading });
             let query = e.target.value;
             fetch(`https://api.github.com/search/repositories?per_page=100&q=${query}`)
                 .then(response => response.json())
-                .then(data => data.items.length === 0 ? this.setState({ noResult:true, items: data.items, isLoading:false, query:query }) : this.setState({ items: data.items, isLoading:false, noResult:false, query:query }));
+                .then(data => data.items.length === 0 ? this.setState({ noResult:true, items: data.items, isLoading:!this.state.isLoading, query:query }) : this.setState({ items: data.items, isLoading:!this.state.isLoading, noResult:false, query:query }));
         }
     }
 
@@ -62,9 +62,9 @@ export default class Search extends Component {
                         <input type="text" className="flex-1 p-6 text-2xl" onKeyPress={this.keyPress.bind(this)} placeholder="Search repositories..." />
                         <img className='p-4' src="https://img.icons8.com/wired/50/000000/search.png" alt='search' />
                     </div>
-                    <Pagination items={items} />
                     {this.state.isLoading && <Loader />}
                     {this.state.noResult && <NoResult query={this.state.query} />}
+                    <Pagination items={items} />
                 </div>
             );
         }
